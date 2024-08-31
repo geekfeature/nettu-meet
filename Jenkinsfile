@@ -58,3 +58,6 @@ pipeline {
 			        archiveArtifacts artifacts: 'sbom.json', allowEmptyArchive: true	
 }
 }
+}
+}
+}
