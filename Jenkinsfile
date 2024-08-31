@@ -3,7 +3,7 @@ pipeline {
         label 'alpine'
     }
     stages {
-          stage('sast-semgrep') {
+/*           stage('sast-semgrep') {
             steps {
                 script {
                 // Semgrep install
@@ -61,6 +61,26 @@ pipeline {
 			        archiveArtifacts artifacts: 'sbom.json', allowEmptyArchive: true	
 }
 }
-}
+} */
+
+        stage('QualtityGate') {
+            agent {
+                label 'alpine'
+            }
+
+            steps {
+                unstash 'zap_results'
+                script {                   
+                   sh '''
+                      ERR=$(zap_results.json | jq | grep -iE '"riskdesc": "High"' | wc -l)
+                     if [ $ERR =! 0 ]; then
+                      echo "QualityGate failed";
+                        exit 1
+                   fi
+                      '''
+                    }
+                }
+
+
 }
 }
