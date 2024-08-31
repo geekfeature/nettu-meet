@@ -3,7 +3,7 @@ pipeline {
         label 'alpine'
     }
     stages {
-         stage('sast-semgrep') {
+/*          stage('sast-semgrep') {
             steps {
                 script {
                 // Semgrep install
@@ -48,6 +48,13 @@ pipeline {
                 }   
             }
                                             
-        }
+        } */
+
+	    stage('syft'){
+            steps {
+                script{
+                    sh 'curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin'
+                    sh 'syft dir:$(pwd) -o cyclonedx-json > sbom.json'
+			        archiveArtifacts artifacts: 'sbom.json', allowEmptyArchive: true	
 }
 }
