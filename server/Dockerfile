@@ -1,10 +1,10 @@
-FROM node:14.15.4
+FROM node:22-bookworm
 
 # Install DEB dependencies and others.
 RUN \
     set -x \
-    && apt-get update \
-    && apt-get install -y net-tools build-essential valgrind
+    && apt-get update
+    #&& apt-get install -y net-tools build-essential
 
 WORKDIR /app
 
