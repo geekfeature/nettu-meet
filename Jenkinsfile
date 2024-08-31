@@ -43,11 +43,10 @@ pipeline {
                     sh 'echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list'
                     sh 'sudo apt-get update'
                     sh 'sudo apt-get install trivy'
-                    sh 'trivy repo https://github.com/geekfeature/nettu-meet/ -f json -o json trivy_result.json'
+                    sh 'trivy repo https://github.com/geekfeature/nettu-meet -f json -o trivy_result.json'
                     archiveArtifacts artifacts: 'trivy_result.json', allowEmptyArchive: true
                 }   
             }
-        } 
                                             
         }
 }
