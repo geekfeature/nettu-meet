@@ -27,7 +27,7 @@ pipeline {
                 // Scanning
                 sh './ZAP_2.15.0/zap.sh -cmd -quickurl https://s410-exam.cyber-ed.space:8084 -quickout ./zap_results.json'
                 // Scanning results uploading
-                stash includes: 'zap_results.json', name: 'zap_results'
+                stash name: 'zap_results', includes: 'zap_results.json' 
                 archiveArtifacts artifacts: 'zap_results.json', allowEmptyArchive: true
                             }
         } 
