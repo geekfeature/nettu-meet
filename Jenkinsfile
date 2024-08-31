@@ -3,7 +3,7 @@ pipeline {
         label 'alpine'
     }
     stages {
-/*           stage('sast-semgrep') {
+           stage('sast-semgrep') {
             steps {
                 script {
                 // Semgrep install
@@ -61,9 +61,9 @@ pipeline {
 			        archiveArtifacts artifacts: 'sbom.json', allowEmptyArchive: true	
 }
 }
-} */
+} 
 
-        stage('QualtityGate') {
+/*        stage('QualtityGate') {
             agent {
                 label 'alpine'
             }
@@ -79,9 +79,9 @@ pipeline {
                    fi
                       '''
                     }
-                }
+                } 
 
+} */
 
-}
 }
 }
