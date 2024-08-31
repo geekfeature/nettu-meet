@@ -31,6 +31,21 @@ pipeline {
                 stash name: 'zap_results', includes: 'zap_results.json' 
                 archiveArtifacts artifacts: 'zap_results.json', allowEmptyArchive: true
                             }
-        } 
+        }
+        stage('trivy') {
+        agent { label 'dind' }
+            steps {
+                sh 'docker pull bitnami/trivy'
+                sh 'docker run --name trivy bitnami/trivy:latest'
+                sh 'docker build -t nettu-meet-server:latest -f ./server/Dockerfile'
+                sh 'trivy image --format cyclonedx --output ./sbom_server.json nettu-meet-server:latest'
+                sh 'trivy sbom -o ./trivy_server.json ./sbom_server.json'
+                sh 'docker build -t nettu-meet-frontend:latest -f ./frontend/docker/Dockerfile'
+                sh 'trivy image --format cyclonedx --output ./sbom_frontend.json nettu-meet-frontend:latest'
+                sh 'trivy sbom -o ./trivy_frontend.json ./sbom_frontend.json'
+              }
+              archiveArtifacts artifacts: 'trivy_server.json, trivy_frontend.json, sbom_server.json, sbom_frontend.json', followSymlinks: false
+            } 
+                                            
         }
 }
