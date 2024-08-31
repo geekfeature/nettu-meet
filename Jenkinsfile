@@ -3,7 +3,7 @@ pipeline {
         label 'alpine'
     }
     stages {
-/*            stage('sast-semgrep') {
+            stage('sast-semgrep') {
             steps {
                 script {
                 // Semgrep install
@@ -17,7 +17,7 @@ pipeline {
                 archiveArtifacts artifacts: 'semgrep_results.json', fingerprint: true 
             }
             }
-        } */
+        } 
         stage('dast-zap') {
         agent { label 'alpine' }
             steps {
@@ -35,7 +35,7 @@ pipeline {
                             }
       }
         
-/*           stage('trivy') {
+          stage('trivy') {
             agent {
                 label 'dind'
             }
@@ -61,7 +61,7 @@ pipeline {
 			        archiveArtifacts artifacts: 'sbom.json', allowEmptyArchive: true	
 }
 }
-}  */
+} 
 
         stage('QualtityGate') {
             agent {
