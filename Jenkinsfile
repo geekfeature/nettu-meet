@@ -39,13 +39,13 @@ pipeline {
                 sh 'docker pull bitnami/trivy'
                 sh 'docker run --name trivy bitnami/trivy:latest'
                 // build server image
-                sh 'docker build -t ./server/Dockerfile nettu-meet-server:latest -f .'
+                sh 'docker build ./server/Dockerfile -t nettu-meet-server:latest -f .'
                 // trivy server scan
                 sh 'trivy image --format cyclonedx --output ./sbom_server.json nettu-meet-server:latest'
                                 // !!!!!!!!!!!!!!!!!!!!!!!!!!!! поправить sbom !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 sh 'trivy sbom -o ./trivy_server.json ./sbom_server.json'
                 // build server image
-                sh 'docker build -t ./frontend/docker/Dockerfile nettu-meet-frontend:latest -f .'
+                sh 'docker build ./frontend/docker/Dockerfile -t nettu-meet-frontend:latest -f .'
                 // trivy frontend scan
                 sh 'trivy image --format cyclonedx --output ./sbom_frontend.json nettu-meet-frontend:latest'
                 sh 'trivy sbom -o ./trivy_frontend.json ./sbom_frontend.json'
