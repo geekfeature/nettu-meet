@@ -32,29 +32,22 @@ pipeline {
         //         archiveArtifacts artifacts: 'zap_results.json', allowEmptyArchive: true
         //                     }
         // }
+        
         stage('trivy') {
-        agent { label 'dind' }
+            agent {
+                label 'dind'
+            }
             steps {
-                // trivy install
-                sh 'docker pull aquasec/trivy'
-                sh 'docker run --name trivy aquasec/trivy:latest'
-                // build server image
-                sh 'pwd'
-                sh 'docker build -t nettu-meet-server:latest -f $(pwd)/server/Dockerfile .'
-                // trivy server scan
-                sh 'trivy image --format cyclonedx --output ./sbom_server.json nettu-meet-server:latest'
-                                // !!!!!!!!!!!!!!!!!!!!!!!!!!!! поправить sbom !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                sh 'trivy sbom -o ./trivy_server.json ./sbom_server.json'
-                // build server image
-                sh 'docker build -t nettu-meet-frontend:latest -f $(pwd)/frontend/docker/Dockerfile .'
-                // trivy frontend scan
-                sh 'trivy image --format cyclonedx --output ./sbom_frontend.json nettu-meet-frontend:latest'
-                sh 'trivy sbom -o ./trivy_frontend.json ./sbom_frontend.json'
-                // Scanning results uploading
-                archiveArtifacts artifacts: 'trivy_server.json, trivy_frontend.json, sbom_server.json, sbom_frontend.json', followSymlinks: false
-              }
-            
-            } 
+                script {
+                    sh 'wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -'
+                    sh 'echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list'
+                    sh 'sudo apt-get update'
+                    sh 'sudo apt-get install trivy'
+                    sh 'trivy repo https://github.com/geekfeature/nettu-meet/ -f json -o json > trivy_result.json'
+                    archiveArtifacts artifacts: 'trivy_result.json', allowEmptyArchive: true
+                }   
+            }
+        } 
                                             
         }
 }
